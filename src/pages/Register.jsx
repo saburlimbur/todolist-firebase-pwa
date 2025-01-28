@@ -2,18 +2,20 @@ import React from 'react';
 import AuthTemplate from '../components/template/AuthTemplate';
 import { useFormik } from 'formik';
 import { useState } from 'react';
-import usersSchema from '../service/usersSchema';
 import googleIcon from '../assets/google-icon-logo-svgrepo-com.svg';
+import { registerUserSchema } from '../service/usersSchema';
 import Button from '../components/elements/Button';
 import { createUserWithEmail, createUserWithGoogle } from '../service/userService';
 import { useNavigate } from 'react-router-dom';
 import InputFields from '../components/fragments/InputFields';
+import { useCreateUserWithEmail } from '../hooks/useUsers';
 
 function Register() {
   const navigate = useNavigate();
-  const [isLogin, setIsLogin] = useState(false);
-  const [loading, setIsLoading] = useState(false);
+  const [loading, setIsLoadingGoogle] = useState(false);
+  const [loadingEmail, setIsLoadingEmail] = useState(false);
   const [renderForm, setRenderForm] = useState(false);
+  const { createUserWithEmailMutation } = useCreateUserWithEmail();
 
   const formik = useFormik({
     initialValues: {
@@ -21,42 +23,43 @@ function Register() {
       email: '',
       password: '',
     },
-    validationSchema: usersSchema,
+    validationSchema: registerUserSchema,
     onSubmit: async (values) => {
       console.log('data:', values);
 
-      try {
-        setIsLoading(true);
-        await createUserWithEmail(values.email, values.password);
-        setIsLoading(false);
-        // navigate('/login');
-        navigate('/');
-      } catch (error) {
-        setIsLoading(false);
-        console.error('Terjadi kesalahan saat login:', error);
-      }
+      createUserWithEmailMutation(
+        {
+          email: values.email,
+          password: values.password,
+        },
+        {
+          onSuccess: () => {
+            setIsLoadingEmail(false);
+            navigate('/');
+          },
+          onError: (error) => {
+            setIsLoadingEmail(false);
+            console.error('Terjadi kesalahan saat register:', error);
+          },
+        }
+      );
     },
   });
 
   const onModalGoogle = async () => {
     try {
-      setIsLoading(true);
+      setIsLoadingGoogle(true);
       await createUserWithGoogle();
-
+      setIsLoadingGoogle(false);
       navigate('/todoboard');
-      setIsLoading(false);
     } catch (error) {
-      setIsLoading(false);
+      setIsLoadingGoogle(false);
       console.error('Error signing up with Google: ', error);
     }
   };
 
   return (
-    <AuthTemplate 
-      title="Sign up here!" 
-      subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit." 
-      type="register"
-      >
+    <AuthTemplate title="Sign up here!" subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit." type="register">
       <section className="max-w-[500px] m-auto">
         <div className="flex flex-col gap-4">
           <Button
@@ -79,63 +82,33 @@ function Register() {
             <div className="pt-8">
               <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
                 <div>
-                  <InputFields 
-                    htmlFor="username" 
-                    label="username" 
-                    type="username" 
-                    name="username" 
-                    id="username" 
-                    placeholder="Masukkan username" 
-                    value={formik.values.username} 
-                    onBlur={formik.handleBlur} 
-                    onChange={formik.handleChange} 
-                    />
+                  <InputFields htmlFor="username" label="Username" type="text" name="username" id="username" placeholder="Masukkan username" value={formik.values.username} onBlur={formik.handleBlur} onChange={formik.handleChange} />
                   {formik.errors.username && formik.touched.username && <p className="text-red-500 text-xs">{formik.errors.username}</p>}
                 </div>
 
                 <div>
-                  <InputFields 
-                    htmlFor="email" 
-                    label="Email" 
-                    type="email" 
-                    name="email" 
-                    id="email" 
-                    placeholder="Masukkan email" 
-                    value={formik.values.email} 
-                    onBlur={formik.handleBlur} 
-                    onChange={formik.handleChange} 
-                    />
+                  <InputFields htmlFor="email" label="Email" type="email" name="email" id="email" placeholder="Masukkan email" value={formik.values.email} onBlur={formik.handleBlur} onChange={formik.handleChange} />
                   {formik.errors.email && formik.touched.email && <p className="text-red-500 text-xs">{formik.errors.email}</p>}
                 </div>
 
                 <div>
-                  <InputFields 
-                    htmlFor="password" 
-                    label="Password" 
-                    type="password" 
-                    name="password" 
-                    id="password" 
-                    placeholder="Masukkan password" 
-                    value={formik.values.password} 
-                    onBlur={formik.handleBlur} 
-                    onChange={formik.handleChange} 
-                  />
+                  <InputFields htmlFor="password" label="Password" type="password" name="password" id="password" placeholder="Masukkan password" value={formik.values.password} onBlur={formik.handleBlur} onChange={formik.handleChange} />
                   {formik.errors.password && formik.touched.password && <p className="text-red-500 text-xs">{formik.errors.password}</p>}
                 </div>
 
                 <Button
                   className="w-full bg-[#1a1a2e] text-white hover:bg-[#1a1a2e]/90 text-sm hover:text-white py-4 rounded-full font-medium flex items-center justify-center cursor-pointer transition-colors ease-in"
-                  type="button"
-                  disabled={loading}
+                  type="submit"
+                  disabled={loadingEmail}
                 >
-                  {loading ? 'Logging in...' : 'Sign Up'}
+                  {loadingEmail ? 'Signing up 🚀' : 'Sign Up'}
                 </Button>
               </form>
             </div>
           ) : (
             <Button
               className="w-full text-[#1a1a2e] bg-white border border-gray-300 hover:border-gray-300 text-sm py-4 rounded-full font-medium flex items-center justify-center cursor-pointer transition-colors ease-in"
-              type="submit"
+              type="button"
               onClick={() => setRenderForm(true)}
             >
               Continue with email

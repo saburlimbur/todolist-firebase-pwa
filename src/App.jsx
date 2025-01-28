@@ -1,10 +1,10 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import Home from './pages/Home';
-import Login from './pages/Login';
+// import Home from './pages/Home';
 import Register from './pages/Register';
 import Todos from './pages/Todos';
 import NotFound404 from './pages/NotFound404';
+import Login from './pages/Login';
 
 function App() {
   return (

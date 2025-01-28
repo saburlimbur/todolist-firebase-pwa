@@ -1,6 +1,6 @@
 import { auth, database, googleProvider } from '../config/firebase';
 import { collection, addDoc, updateDoc, deleteDoc, doc, DocumentReference, getDocs, setDoc } from 'firebase/firestore';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, sendEmailVerification, updateProfile } from 'firebase/auth';
 import Notiflix from 'notiflix';
 
 const usersCollectionReference = collection(database, 'todo-list-pwa');
@@ -22,25 +22,38 @@ export async function allUsers() {
 export async function createUserWithGoogle() {
   try {
     const result = await signInWithPopup(auth, googleProvider);
+
     const user = result.user;
 
     console.log('User registered successfully: ', user);
     Notiflix.Notify.success('User registered successfully!');
-    // window.location.href = '/todoboard';
+
+    console.log('User logged-in successfully: ', user);
+    window.location.href = '/todoboard';
   } catch (error) {
     console.error('Error signing up with Google: ', error.message);
     Notiflix.Notify.failure('Error signing up with Google: ' + error.message);
   }
 }
 
-export async function createUserWithEmail(email, password) {
+export async function createUserWithEmail(email, password, displayName, photoURL) {
   try {
     const result = await createUserWithEmailAndPassword(auth, email, password);
 
-    const user = result.user; // ke firestore
-    Notiflix.Notify.success('User created successfully!');
+    const user = result.user;
+
+    // await updateProfile(user, {
+    //   displayName: displayName,
+    //   photoURL: photoURL,
+    // });
+    await sendEmailVerification(user); // send email untuk verifikasi
+
+    localStorage.setItem('user', JSON.stringify(user));
+
+    Notiflix.Notify.success('User created successfully, please check your email!');
     console.log('User created successfully: ', user);
-    // window.location.href = '/login';
+
+    // window.location.href = '/';
   } catch (error) {
     console.error('Error creating user: ', error.message);
     Notiflix.Notify.failure('Error creating user: ' + error.message);
@@ -50,14 +63,16 @@ export async function createUserWithEmail(email, password) {
 export async function loginUserWithGoogle() {
   try {
     const result = await signInWithPopup(auth, googleProvider);
+
     const user = result.user;
 
+    Notiflix.Notify.success('User logged-in with Google successfully!');
     console.log('User logged-in successfully: ', user);
-    Notiflix.Notify.success('User logged-in successfully!');
-    window.location.href = '/todoboard';
+
+    // window.location.href = '/todoboard';
   } catch (error) {
-    console.error('Error signing with Google: ', error.message);
-    Notiflix.Notify.failure('Error signing with Google: ' + error.message);
+    console.error('Error signing in with Google: ', error.message);
+    Notiflix.Notify.failure('Error signing in with Google: ' + error.message);
   }
 }
 
@@ -65,14 +80,21 @@ export async function loginUserWithEmail(email, password) {
   try {
     const result = await signInWithEmailAndPassword(auth, email, password);
 
-    Notiflix.Notify.success('User logged-in successfully!');
-    console.log('User logged-in successfully: ', result.user);
-    window.location.href = '/todoboard';
+    const user = result.user;
+    await sendEmailVerification(user);
+
+    localStorage.setItem('user', JSON.stringify(user));
+    console.log('User logged-in successfully: ', user);
+
+    return user;
+    // Notiflix.Notify.success('User logged-in successfully!');
   } catch (error) {
-    console.error('Error signing with Google: ', error.message);
-    Notiflix.Notify.failure('Error signing with Google: ' + error.message);
+    console.error('Error signing in with email: ', error.message);
+    // Notiflix.Notify.failure('Error signing in with email: ' + error.message);
   }
 }
+
+export async function profileUser() {}
 
 export async function updateUser() {}
 
