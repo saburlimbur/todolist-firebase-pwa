@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAllTodos } from '../hooks/useTodos';
 import Profile from '../components/template/Profile';
+import FormsTodo from '../components/template/FormsTodo';
 
 function Todos() {
   const { allTodoQuery, isLoading, isError } = useAllTodos();
@@ -10,7 +11,7 @@ function Todos() {
   console.log('user:', user);
 
   return (
-    <div>
+    <div className="w-full max-w-2xl sm:max-w-xl mx-auto px-6">
       <Profile />
       {Array.isArray(allTodoQuery) &&
         allTodoQuery.map((e) => {
@@ -25,6 +26,8 @@ function Todos() {
             </div>
           );
         })}
+
+      <FormsTodo />
     </div>
   );
 }

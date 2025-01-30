@@ -17,7 +17,7 @@ function InputFields({ label, htmlFor, type, name, id, placeholder, autoComplete
         autoComplete={autoComplete}
         onBlur={onBlur}
         onChange={onChange}
-        className="block w-full py-4 px-2 text-sm text-gray-900 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+        className="block w-full py-3 px-3 text-sm text-gray-900 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
       />
       {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
     </div>

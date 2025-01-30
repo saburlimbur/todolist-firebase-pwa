@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { allTodos } from '../service/todoService';
 
 export function useAllTodos() {
@@ -12,4 +12,11 @@ export function useAllTodos() {
   });
 
   return { allTodoQuery, isLoading, isError };
+}
+
+export function useCreateTodos() {
+  const {} = useMutation({
+    mutationKey: ['createTodos'],
+    // mutationFn:
+  });
 }
