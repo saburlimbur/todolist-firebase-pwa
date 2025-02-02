@@ -3,11 +3,11 @@ import AuthTemplate from '../components/template/AuthTemplate';
 import { useFormik } from 'formik';
 import { useState } from 'react';
 import googleIcon from '../assets/google-icon-logo-svgrepo-com.svg';
+import InputFields from '../components/fragments/InputFields';
 import { registerUserSchema } from '../service/usersSchema';
 import Button from '../components/elements/Button';
-import { createUserWithEmail, createUserWithGoogle } from '../service/userService';
+import { createUserWithGoogle } from '../service/userService';
 import { useNavigate } from 'react-router-dom';
-import InputFields from '../components/fragments/InputFields';
 import { useCreateUserWithEmail } from '../hooks/useUsers';
 
 function Register() {
@@ -106,7 +106,7 @@ function Register() {
                     placeholder="Masukkan email" 
                     value={formik.values.email} 
                     onBlur={formik.handleBlur} 
-                    onChange={formik.handleChange} 
+                    onChange={formik.handleChange}
                     />
                   {formik.errors.email && formik.touched.email && <p className="text-red-500 text-xs">{formik.errors.email}</p>}
                 </div>

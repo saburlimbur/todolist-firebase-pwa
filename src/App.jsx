@@ -8,7 +8,7 @@ import Login from './pages/Login';
 
 function App() {
   return (
-    <div className="flex min-h-screen justify-center items-center font-poppins">
+    <div className="font-poppins">
       <Routes>
         {/* <Route path="/" element={<Home />} /> */}
         <Route path="*" element={<NotFound404 />} />

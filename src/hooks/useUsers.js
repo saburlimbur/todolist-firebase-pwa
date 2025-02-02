@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { allUsers, createUserWithEmail, loginUserWithEmail } from '../service/userService';
+import { allUsers, createUserWithEmail, createUserWithGoogle, loginUserWithEmail } from '../service/userService';
 
 export function useAllUsers() {
   const {
@@ -38,4 +38,17 @@ export function useLoginUserWithEmail() {
   });
 
   return { loginUserWithEmailMutation, onError, onSucces };
+}
+
+export function useCreateUserWithGoogle() {
+  const {
+    mutate: createUserWithGoogleMutation,
+    onError,
+    isSuccess,
+  } = useMutation({
+    mutationKey: ['createUserWithGoogle'],
+    mutationFn: (data) => createUserWithGoogle(data.email, data.password),
+  });
+
+  return { createUserWithGoogleMutation, onError, isSuccess };
 }

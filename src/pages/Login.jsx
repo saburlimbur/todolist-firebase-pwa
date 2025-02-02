@@ -5,7 +5,7 @@ import { useFormik } from 'formik';
 import InputFields from '../components/fragments/InputFields';
 import Button from '../components/elements/Button';
 import googleIcon from '../assets/google-icon-logo-svgrepo-com.svg';
-import { loginUserWithEmail, loginUserWithGoogle } from '../service/userService';
+import { loginUserWithGoogle } from '../service/userService';
 import { useNavigate } from 'react-router-dom';
 import { loginUserSchema } from '../service/usersSchema';
 import { useLoginUserWithEmail } from '../hooks/useUsers';
@@ -36,19 +36,22 @@ function Login() {
         },
         {
           onSuccess: (user) => {
-            if (!user.emailVerified) {
-              Notiflix.Notify.failure('Please verify your email first!');
+            // if (!user.emailVerified) {
+            //   Notiflix.Notify.failure('Please verify your email first!');
+            //   setIsLoadingEmail(false);
+            //   return;
+            // }
+            if(!user) {
+              Notiflix.Notify.failure("Anda tidak terdaftar pada provider Email, mohon periksa kembali");
               setIsLoadingEmail(false);
               return;
             }
 
-            Notiflix.Notify.success('Login successfully!');
             setIsLoadingEmail(false);
             navigate('/todoboard');
           },
           onError: (error) => {
             console.error('Error during login:', error);
-            Notiflix.Notify.failure('Login failed: ' + error.message);
             setIsLoadingEmail(false);
           },
         }
