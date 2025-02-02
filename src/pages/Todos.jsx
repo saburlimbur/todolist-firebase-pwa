@@ -1,10 +1,8 @@
 import React from 'react';
 import { useAllTodos } from '../hooks/useTodos';
-import FormsTodo from '../components/template/FormsTodo';
 import Card from '../components/fragments/Card';
 import { format } from 'date-fns';
 import CardStatus from '../components/template/CardStatus';
-import Button from '../components/elements/Button';
 import HeaderProfile from '../components/template/HeaderProfile';
 import LoadingElement from '../components/elements/LoadingElement';
 import ErrorElement from '../components/elements/ErrorElement';
@@ -33,19 +31,23 @@ function Todos() {
     <div className="w-full max-w-4xl sm:max-w-xl mx-auto py-5 px-4">
       <HeaderProfile />
       <CardStatus className="py-8" />
+      <div className="flex items-center justify-between px-2 pb-4">
+        <h2>Recent Todo</h2>
+        <p className="underline text-gray-500 text-sm">See all</p>
+      </div>
       {isLoading && <LoadingElement />}
       {isError && <ErrorElement />}
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-5 mb-10">
         {getDataTodo.length > 0 ? (
           getDataTodo.map((e) => {
-            const { id, title, status, description, formattedDate } = e;
+            const { id, title, status, description, formattedDate, author, displayName } = e;
 
             return (
-              <Card key={id} className="bg-[#F9F9F9] py-5 px-3 hover:bg-[#ececec]">
+              <Card key={id} className="bg-white py-5 px-3 hover:bg-[#F9F9F9] border border-gray-400 rounded-lg drop-shadow-md transition duration-300 ease-in-out">
                 <Card.Header className="flex justify-between items-start pb-3 border-b border-gray-200">
                   <div className="flex flex-col gap-1">
-                    <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
-                    <p className="text-sm text-gray-600">{description}</p>
+                    <h2 className="text-[15px] font-semibold text-gray-800">{title}</h2>
+                    <p className="text-[12px] text-gray-500">{description}</p>
                   </div>
                   <p
                     className={`text-xs font-medium px-4 py-2 rounded-full 
@@ -57,8 +59,8 @@ function Todos() {
 
                 <div className="flex justify-between items-center">
                   <Card.Body className="border-t border-t-gray-200 pt-3 flex items-center gap-2">
-                    <img src={user?.photoURL || `https://api.multiavatar.com/${encodeURIComponent(user?.uid)}.svg`} className="rounded-full w-6 h-6" />
-                    <p className="text-xs text-gray-600">{user.displayName}</p>
+                    <img src={`https://api.multiavatar.com/${encodeURIComponent(author)}.svg` || user?.photoURL} className="rounded-full w-6 h-6" />
+                    <p className="text-xs text-gray-600">{author}</p>
                   </Card.Body>
                   <Card.Footer>
                     <p className="text-xs text-gray-500">{formattedDate}</p>
@@ -71,9 +73,6 @@ function Todos() {
           // ternary
           <p>No Todos</p>
         )}
-      </div>
-      <div className="">
-        <FormsTodo />
       </div>
     </div>
   );

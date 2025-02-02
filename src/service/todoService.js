@@ -7,23 +7,14 @@ const todoCollectionReference = collection(database, 'todo-list-pwa');
 export async function allTodos() {
   try {
     const querySnapshot = await getDocs(todoCollectionReference);
-    const todos = querySnapshot.docs.map((doc) => {
-      const todoData = doc.data();
-      const userId = todoData.userId;
-
-      const user = auth.currentUser?.uid === userId ? auth.currentUser : null;
-
-      return {
-        id: doc.id,
-        ...todoData,
-        user: user,
-      };
-    });
+    const todos = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
 
     return todos;
   } catch (error) {
     console.log('Gagal mengambil semua data todo', error);
-    throw error;
   }
 }
 
@@ -36,8 +27,9 @@ export async function createTodos(todo) {
   try {
     const result = await addDoc(todoCollectionReference, {
       ...todo,
-      userId: user.uid, // id yang sedang login (auto id dari firestore)
+      userId: user.uid, // id yang sedang login (auto id)
       created_at: serverTimestamp(),
+      author: todo.author,
       status: todo.status || 'pending', // pending fallback
     });
 
