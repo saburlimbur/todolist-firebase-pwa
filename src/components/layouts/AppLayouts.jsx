@@ -6,9 +6,11 @@ import { Plus } from 'lucide-react';
 import FormsTodo from '../template/FormsTodo';
 import Modal from '../fragments/Modal';
 import { useState } from 'react';
+import { useAllTodos } from '../../hooks/useTodos';
 
 function AppLayouts() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { refetch } = useAllTodos();
 
   const openModal = () => setIsModalOpen(true);
 
@@ -41,7 +43,7 @@ function AppLayouts() {
 
       {/* by props*/}
       <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <FormsTodo />
+        <FormsTodo refetch={refetch} />
       </Modal>
     </main>
   );

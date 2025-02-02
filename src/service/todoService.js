@@ -1,4 +1,4 @@
-import { addDoc, collection, getDocs, serverTimestamp } from 'firebase/firestore';
+import { addDoc, collection, getDocs, query, serverTimestamp, where } from 'firebase/firestore';
 import { auth, database } from '../config/firebase';
 import Notiflix from 'notiflix';
 
@@ -39,3 +39,17 @@ export async function createTodos(todo) {
     throw error;
   }
 }
+
+// export async function getTodoByUserId() {
+//   const user = auth.currentUser;
+
+//   if (!user) {
+//     throw new Error('User tidak ter-authensikasi');
+//   }
+
+//   try {
+//     const querying = query(todoCollectionReference, where('userId', user.uid)); // uid = userId
+//   } catch (error) {
+//     console.log('Gagal mengambil data todo by user id', error);
+//   }
+// }

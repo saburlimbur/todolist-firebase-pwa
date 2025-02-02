@@ -16,8 +16,12 @@ function Todos() {
 
   const getDataTodo = Array.isArray(allTodoQuery)
     ? allTodoQuery.map((item) => {
-        const { seconds, nanoseconds } = item.created_at; // object response todolist created_at
-        const date = new Date(seconds * 1000 + nanoseconds / 1e6);
+        const createdAt = item.created_at;
+        let date = new Date();
+
+        if (createdAt && createdAt.seconds) {
+          date = new Date(createdAt.seconds * 1000);
+        }
 
         return {
           ...item,
@@ -40,7 +44,7 @@ function Todos() {
       <div className="flex flex-col gap-5 mb-10">
         {getDataTodo.length > 0 ? (
           getDataTodo.map((e) => {
-            const { id, title, status, description, formattedDate, author, displayName } = e;
+            const { id, title, status, description, formattedDate, author } = e;
 
             return (
               <Card key={id} className="bg-white py-5 px-3 hover:bg-[#F9F9F9] border border-gray-400 rounded-lg drop-shadow-md transition duration-300 ease-in-out">
@@ -51,15 +55,15 @@ function Todos() {
                   </div>
                   <p
                     className={`text-xs font-medium px-4 py-2 rounded-full 
-                    ${status.complete ? 'bg-green-100 text-green-800' : status.pending ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-200 text-gray-800'}`}
+                    ${status === 'complete' ? 'bg-green-100 text-green-800' : status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-200 text-gray-800'}`}
                   >
-                    {status.complete ? 'Complete' : status.pending ? 'Pending' : 'Archived'}
+                    {status === 'complete' ? 'Complete' : status === 'pending' ? 'Pending' : 'Archived'}
                   </p>
                 </Card.Header>
 
                 <div className="flex justify-between items-center">
                   <Card.Body className="border-t border-t-gray-200 pt-3 flex items-center gap-2">
-                    <img src={`https://api.multiavatar.com/${encodeURIComponent(author)}.svg` || user?.photoURL} className="rounded-full w-6 h-6" />
+                    <img src={`https://api.multiavatar.com/${encodeURIComponent(author)}.svg`} className="rounded-full w-6 h-6" />
                     <p className="text-xs text-gray-600">{author}</p>
                   </Card.Body>
                   <Card.Footer>
@@ -70,7 +74,6 @@ function Todos() {
             );
           })
         ) : (
-          // ternary
           <p>No Todos</p>
         )}
       </div>

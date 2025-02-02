@@ -19,11 +19,11 @@ export function useCreateTodos() {
   const {
     mutate: createTodoMutation,
     onError,
-    isSuccess,
+    onSuccess,
   } = useMutation({
     mutationKey: ['createTodos'],
     mutationFn: createTodos,
   });
 
-  return { createTodoMutation, onError, isSuccess };
+  return { createTodoMutation, onError, onSuccess };
 }
