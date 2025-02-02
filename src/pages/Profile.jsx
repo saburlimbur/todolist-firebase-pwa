@@ -39,7 +39,7 @@ function Profile() {
   };
 
   return (
-    <div className="w-full max-w-4xl sm:max-w-xl mx-auto py-10 px-4">
+    <div className="w-full max-w-4xl sm:max-w-xl mx-auto py-5 px-4">
       <Card className="flex items-center justify-center flex-col relative">
         <Card.Header className="flex justify-center relative">
           <img src={user?.photoURL || `https://api.multiavatar.com/${encodeURIComponent(user?.uid)}.svg`} className="w-36 h-3w-36 border-2 border-gray-200 rounded-full p-1" />

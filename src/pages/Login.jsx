@@ -36,17 +36,6 @@ function Login() {
         },
         {
           onSuccess: (user) => {
-            // if (!user.emailVerified) {
-            //   Notiflix.Notify.failure('Please verify your email first!');
-            //   setIsLoadingEmail(false);
-            //   return;
-            // }
-            if(!user) {
-              Notiflix.Notify.failure("Anda tidak terdaftar pada provider Email, mohon periksa kembali");
-              setIsLoadingEmail(false);
-              return;
-            }
-
             setIsLoadingEmail(false);
             navigate('/todoboard');
           },

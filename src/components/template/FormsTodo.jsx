@@ -3,44 +3,43 @@ import todoSchema from './../../service/todoSchema';
 import InputFields from '../fragments/InputFields';
 import Button from '../elements/Button';
 import SelectOption from '../elements/SelectOption';
+import { useCreateTodos } from '../../hooks/useTodos';
 
 function FormsTodo() {
-  const handleCreateTodo = (ev) => {
+  const { createTodoMutation, isSuccess, onError } = useCreateTodos();
+  const handleCreateTodo = async (ev) => {
     ev.preventDefault();
 
-    let title = ev.target.title.value;
-    let description = ev.target.description.value;
-    let status = ev.target.status.value;
+    const title = ev.target.title.value;
+    const description = ev.target.description.value;
+    const status = ev.target.status.value;
 
     if (!title || !description || !status) {
-        alert('Isi semua input terlebih dahulu!');
-        return;
-      }    
+      alert('Isi semua input terlebih dahulu!');
+      return;
+    }
 
-    alert(`Title: ${title}\nDescription: ${description}\nStatus: ${status}`);
+    const newTodo = {
+      title,
+      description,
+      status,
+    };
 
-    ev.target.reset();
+    try {
+      await createTodoMutation(newTodo);
+      ev.target.reset();
+    } catch (error) {
+      console.log('Error creating todo:', error);
+    }
   };
 
   return (
     <div>
       <form onSubmit={handleCreateTodo}>
         <div className="py-5">
-          <InputFields 
-            htmlFor="title" 
-            label="Title" 
-            type="text" 
-            id="title" 
-            placeholder="Masukan title" 
-            />
+          <InputFields htmlFor="title" label="Title" type="text" id="title" placeholder="Masukan title" />
 
-          <InputFields 
-            htmlFor="description" 
-            label="Description" 
-            type="text" 
-            id="description" 
-            placeholder="Masukan description" 
-            />
+          <InputFields htmlFor="description" label="Description" type="text" id="description" placeholder="Masukan description" />
 
           <SelectOption
             name="status"

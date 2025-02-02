@@ -6,9 +6,11 @@ import { format } from 'date-fns';
 import CardStatus from '../components/template/CardStatus';
 import Button from '../components/elements/Button';
 import HeaderProfile from '../components/template/HeaderProfile';
+import LoadingElement from '../components/elements/LoadingElement';
+import ErrorElement from '../components/elements/ErrorElement';
 
 function Todos() {
-  const { allTodoQuery, isLoading, isError } = useAllTodos();
+  const { allTodoQuery, isLoading, isError, refetch } = useAllTodos();
   const user = JSON.parse(localStorage.getItem('user'));
 
   console.log('todo:', allTodoQuery);
@@ -22,6 +24,7 @@ function Todos() {
         return {
           ...item,
           formattedDate: format(date, 'yyyy-MM-dd'),
+          refetch,
         };
       })
     : [];
@@ -30,8 +33,8 @@ function Todos() {
     <div className="w-full max-w-4xl sm:max-w-xl mx-auto py-5 px-4">
       <HeaderProfile />
       <CardStatus className="py-8" />
-      {isLoading && <p>Loading...</p>}
-      {isError && <p>Error fetching data.</p>}
+      {isLoading && <LoadingElement />}
+      {isError && <ErrorElement />}
       <div className="flex flex-col gap-5">
         {getDataTodo.length > 0 ? (
           getDataTodo.map((e) => {
@@ -52,9 +55,15 @@ function Todos() {
                   </p>
                 </Card.Header>
 
-                <Card.Body className="border-t border-t-gray-200 pt-3">
-                  <h2>{formattedDate}</h2>
-                </Card.Body>
+                <div className="flex justify-between items-center">
+                  <Card.Body className="border-t border-t-gray-200 pt-3 flex items-center gap-2">
+                    <img src={user?.photoURL || `https://api.multiavatar.com/${encodeURIComponent(user?.uid)}.svg`} className="rounded-full w-6 h-6" />
+                    <p className="text-xs text-gray-600">{user.displayName}</p>
+                  </Card.Body>
+                  <Card.Footer>
+                    <p className="text-xs text-gray-500">{formattedDate}</p>
+                  </Card.Footer>
+                </div>
               </Card>
             );
           })
@@ -63,7 +72,9 @@ function Todos() {
           <p>No Todos</p>
         )}
       </div>
-      <div className="">{/* <FormsTodo /> */}</div>
+      <div className="">
+        <FormsTodo />
+      </div>
     </div>
   );
 }
