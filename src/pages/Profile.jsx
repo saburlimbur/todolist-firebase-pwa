@@ -8,6 +8,9 @@ import Button from '../components/elements/Button';
 import Card from '../components/fragments/Card';
 import { Pencil } from 'lucide-react';
 import { useGetTodoByUserId } from '../hooks/useTodos';
+import LoadingElement from '../components/elements/LoadingElement';
+import ErrorElement from '../components/elements/ErrorElement';
+import { format } from 'date-fns';
 
 function Profile() {
   const { uid } = useParams();
@@ -16,8 +19,22 @@ function Profile() {
   const currentUser = getAuth().currentUser;
 
   // mengembil UID dari Authentication, lalu di relasikan pada field collection todo dgn field userId
-  const { getTodoUserId } = useGetTodoByUserId(currentUser?.uid);
+  const { getTodoUserId, isLoading, isError } = useGetTodoByUserId(currentUser?.uid);
+  const getTodoUid = Array.isArray(getTodoUserId)
+    ? getTodoUserId.map((item) => {
+        const createdAt = item.created_at;
+        let date = new Date();
 
+        if (createdAt && createdAt.seconds) {
+          date = new Date(createdAt.seconds * 1000);
+        }
+
+        return {
+          ...item,
+          formattedDate: format(date, 'yyyy-MM-dd'),
+        };
+      })
+    : [];
   console.log('getTodoUserId', getTodoUserId);
 
   useEffect(() => {
@@ -73,6 +90,53 @@ function Profile() {
           </Button>
         </Card.Footer>
       </Card>
+
+      {/* todo uid */}
+      <div className="w-full">
+        <div className="flex items-center justify-between px-2 pb-4">
+          <h2>Your todo</h2>
+          <p className="underline text-gray-500 text-sm">See all</p>
+        </div>
+        {isLoading && <LoadingElement />}
+        {isError && <ErrorElement />}
+
+        <div className="flex flex-col gap-5 mb-10">
+          {getTodoUid.length > 0 ? (
+            getTodoUid.map((ev) => {
+              const { id, title, status, description, formattedDate, author } = ev;
+
+              return (
+                <Card key={id} className="bg-white py-5 px-3 hover:bg-[#F9F9F9] border border-gray-400 rounded-lg drop-shadow-md transition duration-300 ease-in-out">
+                  <Card.Header className="flex justify-between items-start pb-3 border-b border-gray-200">
+                    <div className="flex flex-col gap-1">
+                      <h2 className="text-[15px] font-semibold text-gray-800">{title}</h2>
+                      <p className="text-[12px] text-gray-500">{description}</p>
+                    </div>
+                    <p
+                      className={`text-xs font-medium px-4 py-2 rounded-full 
+                    ${status === 'complete' ? 'bg-green-100 text-green-800' : status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-200 text-gray-800'}`}
+                    >
+                      {status === 'complete' ? 'Complete' : status === 'pending' ? 'Pending' : 'Archived'}
+                    </p>
+                  </Card.Header>
+
+                  <div className="flex justify-between items-center pt-3">
+                    <Card.Body className="flex items-center gap-2">
+                      <img src={`https://api.multiavatar.com/${encodeURIComponent(author)}.svg`} className="rounded-full w-6 h-6" />
+                      <p className="text-xs text-gray-600">{author}</p>
+                    </Card.Body>
+                    <Card.Footer>
+                      <p className="text-xs text-gray-500">{formattedDate}</p>
+                    </Card.Footer>
+                  </div>
+                </Card>
+              );
+            })
+          ) : (
+            <p>Your todos found</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

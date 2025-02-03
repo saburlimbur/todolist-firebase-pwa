@@ -41,6 +41,7 @@ function Todos() {
       </div>
       {isLoading && <LoadingElement />}
       {isError && <ErrorElement />}
+
       <div className="flex flex-col gap-5 mb-10">
         {getDataTodo.length > 0 ? (
           getDataTodo.map((e) => {
@@ -61,8 +62,8 @@ function Todos() {
                   </p>
                 </Card.Header>
 
-                <div className="flex justify-between items-center">
-                  <Card.Body className="border-t border-t-gray-200 pt-3 flex items-center gap-2">
+                <div className="flex justify-between items-center pt-3">
+                  <Card.Body className="flex items-center gap-2">
                     <img src={`https://api.multiavatar.com/${encodeURIComponent(author)}.svg`} className="rounded-full w-6 h-6" />
                     <p className="text-xs text-gray-600">{author}</p>
                   </Card.Body>
