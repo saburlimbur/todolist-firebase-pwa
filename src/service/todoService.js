@@ -1,4 +1,4 @@
-import { addDoc, collection, getDocs, query, serverTimestamp, where } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs, query, serverTimestamp, where } from 'firebase/firestore';
 import { auth, database } from '../config/firebase';
 import Notiflix from 'notiflix';
 
@@ -40,16 +40,34 @@ export async function createTodos(todo) {
   }
 }
 
-// export async function getTodoByUserId() {
-//   const user = auth.currentUser;
+export async function getTodoByUserId(uid) {
+  const user = auth.currentUser;
 
-//   if (!user) {
-//     throw new Error('User tidak ter-authensikasi');
-//   }
+  if (!user) {
+    throw new Error('User tidak ter-authensikasi');
+  }
 
-//   try {
-//     const querying = query(todoCollectionReference, where('userId', user.uid)); // uid = userId
-//   } catch (error) {
-//     console.log('Gagal mengambil data todo by user id', error);
-//   }
-// }
+  try {
+    // uid dari Authenticaion, lalu mengambil userId dari collection field todo
+    // userId pada collection juga uid dari Authenticaion
+    const querying = query(todoCollectionReference, where('userId', '==', uid));
+
+    const querySnapshot = await getDocs(querying);
+
+    if (querySnapshot.empty) {
+      console.log('Tidak ada todo untuk user ini');
+      return [];
+    }
+
+    const todos = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    console.log('Todos user:', todos);
+    return todos;
+  } catch (error) {
+    console.log('Gagal mengambil data todo by user id', error);
+    throw new Error('Gagal mengambil data todo by user id');
+  }
+}

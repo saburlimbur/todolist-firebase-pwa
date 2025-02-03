@@ -2,15 +2,29 @@ import { getAuth, signOut } from 'firebase/auth';
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Notiflix from 'notiflix';
 import Button from '../components/elements/Button';
 import Card from '../components/fragments/Card';
 import { Pencil } from 'lucide-react';
+import { useGetTodoByUserId } from '../hooks/useTodos';
 
 function Profile() {
+  const { uid } = useParams();
   const navigate = useNavigate();
   const [user, setUser] = useState('');
+  const currentUser = getAuth().currentUser;
+
+  // mengembil UID dari Authentication, lalu di relasikan pada field collection todo dgn field userId
+  const { getTodoUserId } = useGetTodoByUserId(currentUser?.uid);
+
+  console.log('getTodoUserId', getTodoUserId);
+
+  useEffect(() => {
+    if (currentUser) {
+      setUser(currentUser);
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');

@@ -7,8 +7,15 @@ import NotFound404 from './pages/NotFound404';
 import Login from './pages/Login';
 import AppLayouts from './components/layouts/AppLayouts';
 import Profile from './pages/Profile';
+import { useState } from 'react';
+
+function ProtectedRoute() {
+  // const authenticated =
+}
 
 function App() {
+  const [loggedin, setLoggedin] = useState(false);
+
   return (
     <div className="font-poppins">
       <Routes>

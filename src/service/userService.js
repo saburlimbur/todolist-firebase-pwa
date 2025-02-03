@@ -77,6 +77,7 @@ export async function loginUserWithEmail(email, password) {
     console.log('User berhasil login:', user);
   } catch (error) {
     console.error('Gagal login dengan email:', error.message);
+    return;
     // Notiflix.Notify.failure('Email atau password salah! Coba lagi ya.');
   }
 }

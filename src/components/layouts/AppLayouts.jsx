@@ -29,7 +29,7 @@ function AppLayouts() {
             <span className="text-xs pt-1">Home</span>
           </Link>
 
-          <Button className="flex flex-col items-center" onClick={openModal}>
+          <Button className="flex flex-col items-center cursor-pointer" onClick={openModal}>
             <Plus className="p-1 bg-gray-200 rounded-full" size={30} />
             <span className="text-xs pt-1">Create todo</span>
           </Button>
