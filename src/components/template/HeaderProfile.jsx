@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Card from '../fragments/Card';
 import { Pencil } from 'lucide-react';
+import { generateRandomAvatar } from '../../utils';
 
 function HeaderProfile() {
   const [user, setUser] = useState('');
@@ -19,7 +20,7 @@ function HeaderProfile() {
     <div className="flex items-center justify-between w-full max-w-xl bg-gray-100 py-3 px-2 rounded-xl">
       <Card className="flex items-center gap-2">
         <Card.Header className="flex justify-center">
-          <img src={user?.photoURL || `https://api.multiavatar.com/${encodeURIComponent(user?.uid)}.svg`} className="w-14 h-14 border-2 border-gray-200 rounded-full p-1" />
+          <img src={user?.photoURL || generateRandomAvatar()} className="w-14 h-14 border-2 border-gray-200 rounded-full p-1" alt="Profile" />
         </Card.Header>
         <Card.Body className="flex flex-col gap-1">
           <h1 className="text-sm font-semibold">{user?.displayName || user?.email}</h1>

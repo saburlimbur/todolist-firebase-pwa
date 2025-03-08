@@ -1,6 +1,7 @@
 import { addDoc, collection, doc, getDocs, query, serverTimestamp, where } from 'firebase/firestore';
 import { auth, database } from '../config/firebase';
 import Notiflix from 'notiflix';
+import toast from 'react-hot-toast';
 
 const todoCollectionReference = collection(database, 'todo-list-pwa');
 
@@ -33,9 +34,10 @@ export async function createTodos(todo) {
       status: todo.status || 'pending', // pending fallback
     });
 
-    Notiflix.Notify.success('Todo berhasil dibuat🎉!');
+    toast.success('Todo berhasil dibuat🎉!');
     return result;
   } catch (error) {
+    toast.error('Terjadi kesalahan, mohon periksa kembali');
     throw error;
   }
 }
@@ -71,3 +73,5 @@ export async function getTodoByUserId(uid) {
     throw new Error('Gagal mengambil data todo by user id');
   }
 }
+
+export async function updateTodoById() {}

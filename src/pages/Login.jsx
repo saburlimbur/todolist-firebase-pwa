@@ -9,16 +9,15 @@ import { loginUserWithGoogle } from '../service/userService';
 import { useNavigate } from 'react-router-dom';
 import { loginUserSchema } from '../service/usersSchema';
 import { useLoginUserWithEmail } from '../hooks/useUsers';
-import Notiflix from 'notiflix';
+import Loaders from '../components/elements/Loaders';
 
 function Login() {
   const navigate = useNavigate();
-  const [loadingGoogle, setIsLoadingGoogle] = useState(false);
-  const [loadingEmail, setIsLoadingEmail] = useState(false);
+  const [loading, setLoading] = useState({
+    email: false,
+    google: false,
+  });
   const { loginUserWithEmailMutation } = useLoginUserWithEmail();
-
-  // const userStorage = JSON.parse(localStorage.getItem('user'));
-  // console.log("userStorage:", userStorage);
 
   const formik = useFormik({
     initialValues: {
@@ -27,7 +26,7 @@ function Login() {
     },
     validationSchema: loginUserSchema,
     onSubmit: async (values) => {
-      console.log('data:', values);
+      setLoading((prev) => ({ ...prev, email: true }));
 
       loginUserWithEmailMutation(
         {
@@ -35,13 +34,13 @@ function Login() {
           password: values.password,
         },
         {
-          onSuccess: (user) => {
-            setIsLoadingEmail(false);
+          onSuccess: () => {
+            setLoading((prev) => ({ ...prev, email: false }));
             navigate('/todoboard');
           },
           onError: (error) => {
-            console.error('Error during login:', error);
-            setIsLoadingEmail(false);
+            setLoading((prev) => ({ ...prev, email: false }));
+            console.error('Terjadi kesalahan saat register:', error);
           },
         }
       );
@@ -50,12 +49,12 @@ function Login() {
 
   const onModalGoogle = async () => {
     try {
-      setIsLoadingGoogle(true);
+      setLoading((prev) => ({ ...prev, google: true }));
       await loginUserWithGoogle();
+      setLoading((prev) => ({ ...prev, google: false }));
       navigate('/todoboard');
-      setIsLoadingGoogle(false);
     } catch (error) {
-      setIsLoadingGoogle(false);
+      setLoading((prev) => ({ ...prev, google: false }));
       console.error('Error signing up with Google: ', error);
     }
   };
@@ -68,10 +67,10 @@ function Login() {
             className="w-full text-[#1a1a2e] bg-white border border-gray-300 hover:border-gray-300 text-sm py-4 rounded-full font-medium flex items-center justify-center cursor-pointer transition-colors ease-in"
             type="button"
             onClick={onModalGoogle}
-            disabled={loadingGoogle}
+            disabled={loading.google}
           >
             <img src={googleIcon} className="w-4 h-4 mr-3" />
-            {loadingGoogle ? 'Signing up...' : 'Sign up with Google'}
+            {loading.google ? 'Signing up...' : 'Sign up with Google'}
           </Button>
 
           <div className="flex items-center gap-3">
@@ -83,41 +82,21 @@ function Login() {
           <div className="pt-8">
             <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
               <div>
-                <InputFields 
-                  htmlFor="email" 
-                  label="Email" 
-                  type="email" 
-                  name="email" 
-                  id="email" 
-                  placeholder="Masukkan email" 
-                  value={formik.values.email} 
-                  onBlur={formik.handleBlur} 
-                  onChange={formik.handleChange} 
-                  />
+                <InputFields htmlFor="email" label="Email" type="email" name="email" id="email" placeholder="Masukkan email" value={formik.values.email} onBlur={formik.handleBlur} onChange={formik.handleChange} />
                 {formik.errors.email && formik.touched.email && <p className="text-red-500 text-xs">{formik.errors.email}</p>}
               </div>
 
               <div>
-                <InputFields 
-                  htmlFor="password" 
-                  label="Password" 
-                  type="password" 
-                  name="password" 
-                  id="password" 
-                  placeholder="Masukkan password" 
-                  value={formik.values.password} 
-                  onBlur={formik.handleBlur} 
-                  onChange={formik.handleChange} 
-                  />
+                <InputFields htmlFor="password" label="Password" type="password" name="password" id="password" placeholder="Masukkan password" value={formik.values.password} onBlur={formik.handleBlur} onChange={formik.handleChange} />
                 {formik.errors.password && formik.touched.password && <p className="text-red-500 text-xs">{formik.errors.password}</p>}
               </div>
 
               <Button
                 className="w-full bg-[#1a1a2e] text-white hover:bg-[#1a1a2e]/90 text-sm hover:text-white py-4 rounded-full font-medium flex items-center justify-center cursor-pointer transition-colors ease-in"
                 type="submit"
-                disabled={loadingEmail}
+                disabled={loading.email}
               >
-                {loadingEmail ? 'Signing up 🚀' : 'Sign In'}
+                {loading.email ? <Loaders /> : 'Sign Up'}
               </Button>
             </form>
           </div>

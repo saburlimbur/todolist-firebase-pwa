@@ -35,11 +35,11 @@ function FormsTodo({ onClose, refetch }) {
 
         refetch();
 
-        if (onClose) {
-          onClose();
-        }
+        onClose();
+
         setLoading(false);
       } catch (error) {
+        onClose();
         setLoading(false);
         console.log('Error creating todo:', error);
       }
@@ -51,32 +51,12 @@ function FormsTodo({ onClose, refetch }) {
       <form onSubmit={formik.handleSubmit}>
         <div className="py-5 flex flex-col gap-3">
           <div>
-            <InputFields 
-              htmlFor="author" 
-              label="Author Name" 
-              type="text" 
-              id="author" 
-              placeholder="Masukan author samaran" 
-              name="author" 
-              value={formik.values.author} 
-              onBlur={formik.handleBlur} 
-              onChange={formik.handleChange} 
-              />
+            <InputFields htmlFor="author" label="Author Name" type="text" id="author" placeholder="Masukan author samaran" name="author" value={formik.values.author} onBlur={formik.handleBlur} onChange={formik.handleChange} />
             {formik.errors.author && formik.touched.author && <p className="text-red-500 text-xs">{formik.errors.author}</p>}
           </div>
 
           <div>
-            <InputFields 
-              htmlFor="title" 
-              label="Title" 
-              type="text" 
-              id="title" 
-              placeholder="Masukan title" 
-              name="title" 
-              value={formik.values.title} 
-              onBlur={formik.handleBlur} 
-              onChange={formik.handleChange} 
-              />
+            <InputFields htmlFor="title" label="Title" type="text" id="title" placeholder="Masukan title" name="title" value={formik.values.title} onBlur={formik.handleBlur} onChange={formik.handleChange} />
             {formik.errors.title && formik.touched.title && <p className="text-red-500 text-xs">{formik.errors.title}</p>}
           </div>
 

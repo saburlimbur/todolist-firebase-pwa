@@ -34,11 +34,12 @@ export function useGetTodoByUserId(uid) {
     data: getTodoUserId,
     isLoading,
     isError,
+    refetch,
   } = useQuery({
     queryKey: ['todoUserId', uid],
     queryFn: () => getTodoByUserId(uid),
     enabled: !!uid,
   });
 
-  return { getTodoUserId, isLoading, isError };
+  return { getTodoUserId, isLoading, isError, refetch };
 }

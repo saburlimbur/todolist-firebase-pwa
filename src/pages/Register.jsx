@@ -9,11 +9,16 @@ import Button from '../components/elements/Button';
 import { createUserWithGoogle } from '../service/userService';
 import { useNavigate } from 'react-router-dom';
 import { useCreateUserWithEmail } from '../hooks/useUsers';
+import { signInWithRedirect } from 'firebase/auth';
+import { auth, googleProvider } from '../config/firebase';
+import Loaders from '../components/elements/Loaders';
 
 function Register() {
   const navigate = useNavigate();
-  const [loading, setIsLoadingGoogle] = useState(false);
-  const [loadingEmail, setIsLoadingEmail] = useState(false);
+  const [loading, setLoading] = useState({
+    email: false,
+    google: false,
+  });
   const [renderForm, setRenderForm] = useState(false);
   const { createUserWithEmailMutation } = useCreateUserWithEmail();
 
@@ -25,8 +30,7 @@ function Register() {
     },
     validationSchema: registerUserSchema,
     onSubmit: async (values) => {
-      console.log('data:', values);
-
+      setLoading((prev) => ({ ...prev, email: true }));
       createUserWithEmailMutation(
         {
           email: values.email,
@@ -34,11 +38,11 @@ function Register() {
         },
         {
           onSuccess: () => {
-            setIsLoadingEmail(false);
+            setLoading((prev) => ({ ...prev, email: false }));
             navigate('/');
           },
           onError: (error) => {
-            setIsLoadingEmail(false);
+            setLoading((prev) => ({ ...prev, email: false }));
             console.error('Terjadi kesalahan saat register:', error);
           },
         }
@@ -48,12 +52,12 @@ function Register() {
 
   const onModalGoogle = async () => {
     try {
-      setIsLoadingGoogle(true);
+      setLoading((prev) => ({ ...prev, google: true }));
       await createUserWithGoogle();
-      setIsLoadingGoogle(false);
+      setLoading((prev) => ({ ...prev, google: false }));
       navigate('/todoboard');
     } catch (error) {
-      setIsLoadingGoogle(false);
+      setLoading((prev) => ({ ...prev, google: false }));
       console.error('Error signing up with Google: ', error);
     }
   };
@@ -66,10 +70,10 @@ function Register() {
             className="w-full bg-[#1a1a2e] text-white hover:bg-[#1a1a2e]/90 text-sm hover:text-white py-4 rounded-full font-medium flex items-center justify-center cursor-pointer transition-colors ease-in"
             type="button"
             onClick={onModalGoogle}
-            disabled={loading}
+            disabled={loading.google}
           >
             <img src={googleIcon} className="w-4 h-4 mr-3" />
-            {loading ? 'Signing up...' : 'Sign up with Google'}
+            {loading.google ? 'Signing up...' : 'Sign up with Google'}
           </Button>
 
           <div className="flex items-center gap-3">
@@ -82,56 +86,26 @@ function Register() {
             <div className="pt-8">
               <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
                 <div>
-                  <InputFields 
-                    htmlFor="username" 
-                    label="Username" 
-                    type="text" 
-                    name="username" 
-                    id="username" 
-                    placeholder="Masukkan username" 
-                    value={formik.values.username} 
-                    onBlur={formik.handleBlur} 
-                    onChange={formik.handleChange} 
-                    />
+                  <InputFields htmlFor="username" label="Username" type="text" name="username" id="username" placeholder="Masukkan username" value={formik.values.username} onBlur={formik.handleBlur} onChange={formik.handleChange} />
                   {formik.errors.username && formik.touched.username && <p className="text-red-500 text-xs">{formik.errors.username}</p>}
                 </div>
 
                 <div>
-                  <InputFields 
-                    htmlFor="email" 
-                    label="Email" 
-                    type="email" 
-                    name="email" 
-                    id="email" 
-                    placeholder="Masukkan email" 
-                    value={formik.values.email} 
-                    onBlur={formik.handleBlur} 
-                    onChange={formik.handleChange}
-                    />
+                  <InputFields htmlFor="email" label="Email" type="email" name="email" id="email" placeholder="Masukkan email" value={formik.values.email} onBlur={formik.handleBlur} onChange={formik.handleChange} />
                   {formik.errors.email && formik.touched.email && <p className="text-red-500 text-xs">{formik.errors.email}</p>}
                 </div>
 
                 <div>
-                  <InputFields 
-                    htmlFor="password" 
-                    label="Password" 
-                    type="password" 
-                    name="password" 
-                    id="password" 
-                    placeholder="Masukkan password" 
-                    value={formik.values.password} 
-                    onBlur={formik.handleBlur} 
-                    onChange={formik.handleChange} 
-                    />
+                  <InputFields htmlFor="password" label="Password" type="password" name="password" id="password" placeholder="Masukkan password" value={formik.values.password} onBlur={formik.handleBlur} onChange={formik.handleChange} />
                   {formik.errors.password && formik.touched.password && <p className="text-red-500 text-xs">{formik.errors.password}</p>}
                 </div>
 
                 <Button
                   className="w-full bg-[#1a1a2e] text-white hover:bg-[#1a1a2e]/90 text-sm hover:text-white py-4 rounded-full font-medium flex items-center justify-center cursor-pointer transition-colors ease-in"
                   type="submit"
-                  disabled={loadingEmail}
+                  disabled={loading.email}
                 >
-                  {loadingEmail ? 'Signing up 🚀' : 'Sign Up'}
+                  {loading.email ? <Loaders /> : 'Sign Up'}
                 </Button>
               </form>
             </div>

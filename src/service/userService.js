@@ -1,7 +1,8 @@
 import { auth, database, googleProvider } from '../config/firebase';
 import { collection, getDocs } from 'firebase/firestore';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, sendEmailVerification } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, sendEmailVerification, signOut } from 'firebase/auth';
 import Notiflix from 'notiflix';
+import toast from 'react-hot-toast';
 
 const usersCollectionReference = collection(database, 'todo-list-pwa');
 
@@ -25,11 +26,11 @@ export async function createUserWithGoogle() {
 
     localStorage.setItem('user', JSON.stringify(user));
 
-    Notiflix.Notify.success('Yeay! Berhasil register pakai Google! 🎉');
+    toast.success('Yeay! Berhasil register pakai Google! 🎉');
     console.log('User berhasil register:', user);
   } catch (error) {
     console.error('Gagal register dengan Google:', error.message);
-    Notiflix.Notify.failure('Ups! Gagal register pakai Google. Coba lagi ya! 🙏');
+    toast.error('Ups! Gagal register pakai Google. Coba lagi ya! 🙏');
     throw error;
   }
 }
@@ -42,14 +43,44 @@ export async function createUserWithEmail(email, password) {
     await sendEmailVerification(user);
     localStorage.setItem('user', JSON.stringify(user));
 
-    Notiflix.Notify.success('Akun berhasil dibuat! Cek email buat verifikasi ya 📧');
+    toast.success('Akun berhasil dibuat! Cek email buat verifikasi ya 📧');
     console.log('User berhasil dibuat:', user);
   } catch (error) {
     console.error('Gagal buat akun:', error.message);
-    Notiflix.Notify.failure('Gagal buat akun! Pastikan email & password benar.');
+    toast.error('Gagal buat akun! Pastikan email & password benar.');
     throw error;
   }
 }
+
+// export async function createUserWithEmail(email, password) {
+//   try {
+//     const result = await createUserWithEmailAndPassword(auth, email, password);
+//     const user = result.user;
+
+//     await sendEmailVerification(user);
+
+//     const userRef = doc(database, 'users', user.uid);
+//     await setDoc(userRef, {
+//       author: '',
+//       created_at: Date.now(),
+//       description: '',
+//       email: user.email,
+//       password: '',
+//       status: 'active',
+//       title: '',
+//       userId: user.uid,
+//     });
+
+//     localStorage.setItem('user', JSON.stringify(user));
+
+//     Notiflix.Notify.success('Akun berhasil dibuat! Cek email untuk verifikasi ya 📧');
+//     console.log('User berhasil dibuat:', user);
+//   } catch (error) {
+//     console.error('Gagal buat akun:', error.message);
+//     Notiflix.Notify.failure('Gagal buat akun! Pastikan email & password benar.');
+//     throw error;
+//   }
+// }
 
 export async function loginUserWithGoogle() {
   try {
@@ -58,11 +89,11 @@ export async function loginUserWithGoogle() {
 
     localStorage.setItem('user', JSON.stringify(user));
 
-    Notiflix.Notify.success('Yeay! Berhasil login pakai Google! 🎉');
+    toast.success('Yeay! Berhasil login pakai Google! 🎉');
     console.log('User berhasil login:', user);
   } catch (error) {
     console.error('Gagal login dengan Google:', error.message);
-    Notiflix.Notify.failure('Ups! Gagal login pakai Google. Coba lagi ya! 🙏');
+    toast.error('Ups! Gagal login pakai Google. Coba lagi ya! 🙏');
   }
 }
 
@@ -73,13 +104,26 @@ export async function loginUserWithEmail(email, password) {
 
     localStorage.setItem('user', JSON.stringify(user));
 
-    Notiflix.Notify.success('Berhasil login! Selamat datang kembali! 🎉');
+    toast.success('Berhasil login! Selamat datang kembali! 🎉');
     console.log('User berhasil login:', user);
   } catch (error) {
     console.error('Gagal login dengan email:', error.message);
+    toast.error('Email dan password salah! periksa kembali');
     return;
     // Notiflix.Notify.failure('Email atau password salah! Coba lagi ya.');
   }
+}
+
+export async function logoutUser() {
+  signOut(auth)
+    .then(() => {
+      localStorage.clear();
+      toast.success('Anda telah logout');
+      window.location.href = '/register';
+    })
+    .catch((err) => {
+      toast.error('Terjadi kesalahan saat logout');
+    });
 }
 
 export async function profileUser() {}

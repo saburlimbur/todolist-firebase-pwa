@@ -6,6 +6,7 @@ import CardStatus from '../components/template/CardStatus';
 import HeaderProfile from '../components/template/HeaderProfile';
 import LoadingElement from '../components/elements/LoadingElement';
 import ErrorElement from '../components/elements/ErrorElement';
+import { generateRandomAvatar } from '../utils';
 
 function Todos() {
   const { allTodoQuery, isLoading, isError, refetch } = useAllTodos();
@@ -64,7 +65,7 @@ function Todos() {
 
                 <div className="flex justify-between items-center pt-3">
                   <Card.Body className="flex items-center gap-2">
-                    <img src={`https://api.multiavatar.com/${encodeURIComponent(author)}.svg`} className="rounded-full w-6 h-6" />
+                    <img src={generateRandomAvatar()} className="rounded-full w-6 h-6" />
                     <p className="text-xs text-gray-600">{author}</p>
                   </Card.Body>
                   <Card.Footer>
@@ -75,7 +76,7 @@ function Todos() {
             );
           })
         ) : (
-          <p>No Todos</p>
+          <p className="text-center">No Todos</p>
         )}
       </div>
     </div>
