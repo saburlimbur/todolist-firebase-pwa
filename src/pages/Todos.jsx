@@ -45,8 +45,8 @@ function Todos() {
 
       <div className="flex flex-col gap-5 mb-10">
         {getDataTodo.length > 0 ? (
-          getDataTodo.map((e) => {
-            const { id, title, status, description, formattedDate, author } = e;
+          getDataTodo.map((ev) => {
+            const { id, title, status, description, formattedDate, author } = ev;
 
             return (
               <Card key={id} className="bg-white py-5 px-3 hover:bg-[#F9F9F9] border border-gray-400 rounded-lg drop-shadow-md transition duration-300 ease-in-out">

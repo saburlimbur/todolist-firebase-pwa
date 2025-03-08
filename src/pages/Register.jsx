@@ -63,7 +63,11 @@ function Register() {
   };
 
   return (
-    <AuthTemplate title="Sign up here!" subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit." type="register">
+    <AuthTemplate 
+      title="Sign up here!" 
+      subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit." 
+      type="register"
+      >
       <section className="max-w-[500px] m-auto">
         <div className="flex flex-col gap-4">
           <Button
@@ -86,17 +90,47 @@ function Register() {
             <div className="pt-8">
               <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
                 <div>
-                  <InputFields htmlFor="username" label="Username" type="text" name="username" id="username" placeholder="Masukkan username" value={formik.values.username} onBlur={formik.handleBlur} onChange={formik.handleChange} />
+                  <InputFields 
+                    htmlFor="username" 
+                    label="Username" 
+                    type="text" 
+                    name="username" 
+                    id="username" 
+                    placeholder="Masukkan username" 
+                    value={formik.values.username} 
+                    onBlur={formik.handleBlur} 
+                    onChange={formik.handleChange} 
+                    />
                   {formik.errors.username && formik.touched.username && <p className="text-red-500 text-xs">{formik.errors.username}</p>}
                 </div>
 
                 <div>
-                  <InputFields htmlFor="email" label="Email" type="email" name="email" id="email" placeholder="Masukkan email" value={formik.values.email} onBlur={formik.handleBlur} onChange={formik.handleChange} />
+                  <InputFields 
+                    htmlFor="email" 
+                    label="Email" 
+                    type="email" 
+                    name="email" 
+                    id="email" 
+                    placeholder="Masukkan email" 
+                    value={formik.values.email} 
+                    onBlur={formik.handleBlur} 
+                    onChange={formik.handleChange} 
+                    />
                   {formik.errors.email && formik.touched.email && <p className="text-red-500 text-xs">{formik.errors.email}</p>}
                 </div>
 
                 <div>
-                  <InputFields htmlFor="password" label="Password" type="password" name="password" id="password" placeholder="Masukkan password" value={formik.values.password} onBlur={formik.handleBlur} onChange={formik.handleChange} />
+                  <InputFields 
+                    htmlFor="password" 
+                    label="Password" 
+                    type="password" 
+                    name="password" 
+                    id="password" 
+                    placeholder="Masukkan password" 
+                    value={formik.values.password} 
+                    onBlur={formik.handleBlur} 
+                    onChange={formik.handleChange} 
+                    />
                   {formik.errors.password && formik.touched.password && <p className="text-red-500 text-xs">{formik.errors.password}</p>}
                 </div>
 
