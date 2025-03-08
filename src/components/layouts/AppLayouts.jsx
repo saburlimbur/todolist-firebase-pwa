@@ -11,6 +11,9 @@ import { useAllTodos } from '../../hooks/useTodos';
 function AppLayouts() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { refetch } = useAllTodos();
+  const user = localStorage.getItem(JSON.stringify('user'));
+
+  console.log('user', user);
 
   const openModal = () => setIsModalOpen(true);
 

@@ -49,6 +49,7 @@ export async function createUserWithEmail(email, password) {
     console.error('Gagal buat akun:', error.message);
     toast.error('Gagal buat akun! Pastikan email & password benar.');
     throw error;
+    return user;
   }
 }
 
@@ -94,6 +95,7 @@ export async function loginUserWithGoogle() {
   } catch (error) {
     console.error('Gagal login dengan Google:', error.message);
     toast.error('Ups! Gagal login pakai Google. Coba lagi ya! 🙏');
+    return user;
   }
 }
 
@@ -109,7 +111,7 @@ export async function loginUserWithEmail(email, password) {
   } catch (error) {
     console.error('Gagal login dengan email:', error.message);
     toast.error('Email dan password salah! periksa kembali');
-    return;
+    return user;
     // Notiflix.Notify.failure('Email atau password salah! Coba lagi ya.');
   }
 }
@@ -119,7 +121,10 @@ export async function logoutUser() {
     .then(() => {
       localStorage.clear();
       toast.success('Anda telah logout');
-      window.location.href = '/register';
+
+      setTimeout(() => {
+        window.location.href = '/register';
+      }, 2000);
     })
     .catch((err) => {
       toast.error('Terjadi kesalahan saat logout');
