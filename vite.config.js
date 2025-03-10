@@ -19,7 +19,7 @@ export default defineConfig({
       },
 
       manifest: {
-        name: 'todolist-firebase-pwa',
+        name: 'Simple Todo List',
         short_name: 'todolist-firebase-pwa',
         description: 'Belajar membuat PWA dengan Firebase dan Vite',
         theme_color: '#ffffff',
